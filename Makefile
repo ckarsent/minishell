@@ -1,6 +1,6 @@
 NAME = minishell
 
-CC = cc -g3 -Wall -Werror -Wextra
+CC = cc #-Wall -Werror -Wextra #-fsanitize=address -g3
 CFLAGS = -Iinclude -Ilibft
 LDFLAGS = -lreadline
 
@@ -11,14 +11,24 @@ OBJ_DIR = obj
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRCS =  $(SRC_DIR)/main.c \
+		$(SRC_DIR)/builtins/cd.c \
 		$(SRC_DIR)/builtins/echo.c \
-		$(SRC_DIR)/execution/branch.c \
+		$(SRC_DIR)/builtins/env.c \
+		$(SRC_DIR)/builtins/exit.c \
+		$(SRC_DIR)/builtins/export.c \
+		$(SRC_DIR)/builtins/pwd.c \
+		$(SRC_DIR)/builtins/unset.c \
+		$(SRC_DIR)/execution/cmd.c \
+		$(SRC_DIR)/execution/heredoc.c \
+		$(SRC_DIR)/execution/execution4.c \
+		$(SRC_DIR)/expansion/expansion.c \
 		$(SRC_DIR)/parsing/errors.c \
-		$(SRC_DIR)/parsing/expansion_len.c \
-		$(SRC_DIR)/parsing/expansion.c \
-		$(SRC_DIR)/parsing/init_list.c \
+		$(SRC_DIR)/parsing/init_cmd.c \
+		$(SRC_DIR)/parsing/init_env.c \
+		$(SRC_DIR)/parsing/init_token.c \
 		$(SRC_DIR)/parsing/parsing_utils.c \
 		$(SRC_DIR)/parsing/parsing.c \
+		$(SRC_DIR)/parsing/quote.c \
 		$(SRC_DIR)/parsing/tokenize.c \
 		$(SRC_DIR)/parsing/type.c \
         $(SRC_DIR)/utils/debug.c \

@@ -1,36 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ckarsent <ckarsent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 17:52:34 by qboutel           #+#    #+#             */
-/*   Updated: 2025/04/12 10:18:36 by ckarsent         ###   ########.fr       */
+/*   Created: 2025/04/10 21:39:10 by qboutel           #+#    #+#             */
+/*   Updated: 2025/04/12 09:39:53 by ckarsent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	builtin_echo(char **args)
+void    builtin_pwd()
 {
-	int	i;
-	int	flag;
+	char *cwd;
 
-	flag = 1;
-	i = 1;
-	if (args[1] && !ft_strncmp(args[1], "-n", 2))
+	cwd = getcwd(NULL, 0);
+    if (cwd != NULL)
 	{
-		flag = 0;
-		i++;
-	}
-	while (args[i])
+        printf("%s\n", cwd);
+        free(cwd);
+    }
+	else
 	{
-		printf("%s", args[i]);
-		if (args[i + 1])
-			printf(" ");
-		i++;
-	}
-	if (flag)
-		printf("\n");
+        perror("getcwd");
+        return ;
+    }
 }

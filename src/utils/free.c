@@ -3,51 +3,71 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ckarsent <ckarsent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 20:43:34 by ckarsent          #+#    #+#             */
-/*   Updated: 2025/03/27 12:39:51 by ckarsent         ###   ########.fr       */
+/*   Updated: 2025/04/11 13:44:06 by qboutel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "minishell.h"
 
-void	free_list(t_token **head)
+void	free_list_token(t_token **htoken)
 {
 	t_token	*tmp;
 
-	while (*head)
+	while (*htoken)
 	{
-		tmp = *head;
-		*head = (*head)->next;
+		tmp = *htoken;
+		*htoken = (*htoken)->next;
 		if (tmp->token)
 			free(tmp->token);
 		free(tmp);
 	}
 }
 
-void	free_list_cmd(t_cmd **head)
+void	free_list_cmd(t_cmd **hcmd)
 {
 	t_cmd	*tmp;
 
-	while (*head)
+	while (*hcmd)
 	{
-		tmp = *head;
-		*head = (*head)->next;
-		if (*(tmp->token))
-			free_split(tmp->token);
-		if (tmp->type)
-			free(tmp->type);
+		tmp = *hcmd;
+		*hcmd = (*hcmd)->next;
+		if (tmp->tokens)
+			free_split(tmp->tokens);
+		if (tmp->infile)
+			free(tmp->infile);
+		if (tmp->outfile)
+			free(tmp->outfile);		
+		free(tmp->types);
+		free(tmp->fquotes);
 		free(tmp);
 	}
 }
 
-void	free_split(char **split)
+void	free_list_env(t_env **henv)
+{
+	t_env	*tmp;
+
+	while (*henv)
+	{
+		tmp = *henv;
+		*henv = (*henv)->next;
+		if (tmp->key)
+			free(tmp->key);
+		if (tmp->value)
+			free(tmp->value);
+		free(tmp);
+	}
+}
+
+char	*free_split(char **split)
 {
 	int	i;
 
 	if (!split)
-		return ;
+		return (NULL);
 	i = 0;
 	while (split[i] != NULL)
 	{
@@ -56,4 +76,5 @@ void	free_split(char **split)
 		i++;
 	}
 	free(split);
+	return (NULL);
 }

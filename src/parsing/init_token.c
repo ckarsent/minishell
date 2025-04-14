@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_list.c                                        :+:      :+:    :+:   */
+/*   init_token.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ckarsent <ckarsent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/12 12:27:49 by qboutel           #+#    #+#             */
-/*   Updated: 2025/03/24 17:27:50 by qboutel          ###   ########.fr       */
+/*   Created: 2025/03/27 20:46:33 by qboutel           #+#    #+#             */
+/*   Updated: 2025/04/08 11:53:53 by ckarsent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	*create_node(char *tk, int t)
+t_token	*create_node_token(char *tk, int t, int flag)
 {
 	t_token	*node;
 
@@ -21,24 +21,25 @@ t_token	*create_node(char *tk, int t)
 		return (NULL);
 	node->token = tk;
 	node->type = t;
+	node->fquote = flag;
 	node->next = NULL;
 	return (node);
 }
 
-void	append_node(t_token **head, char *tk, int t)
+void	append_node_token(t_token **htoken, char *tk, int t, int flag)
 {
 	t_token	*node;
 	t_token	*tmp;
 
-	node = create_node(tk, t);
+	node = create_node_token(tk, t, flag);
 	if (!node)
 		return ;
-	if (*head == NULL)
+	if (*htoken == NULL)
 	{
-		*head = node;
+		*htoken = node;
 		return ;
 	}
-	tmp = *head;
+	tmp = *htoken;
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = node;

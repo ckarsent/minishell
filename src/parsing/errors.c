@@ -3,43 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ckarsent <ckarsent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 19:39:54 by ckarsent          #+#    #+#             */
-/*   Updated: 2025/03/27 12:34:32 by ckarsent         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:26:04 by qboutel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	error_malloc(t_token *head)
+int	error_malloc_token(t_token *htoken)
 {
-	while (head)
+	while (htoken)
 	{
-		if (head->token == NULL)
+		if (htoken->token == NULL)
 			return (-1);
-		head = head->next;
+		htoken = htoken->next;
 	}
 	return (0);
 }
 
-int	error_syntaxe(t_token *head)
+int	error_syntaxe(t_token *htoken)
 {
-	if (head->type == PIPE)
+	if (htoken->type == PIPE)
 		return (-1);
-	while (head)
+	while (htoken)
 	{
-		if (head->type >= PIPE && head->type <= HEREDOC && head->next != NULL)
+		if (htoken->type >= PIPE && htoken->type <= HEREDOC && htoken->next == NULL)
+			return (-1);
+		if (htoken->type == PIPE && htoken->next->type == PIPE && htoken->next != NULL)
+			return (-1);
+		if (htoken->type >= REDIR_OUT && htoken->type <= HEREDOC && htoken->next != NULL)
 		{
-			if (head->next->type >= PIPE && head->next->type <= HEREDOC)
+			if (htoken->next->type >= PIPE && htoken->next->type <= HEREDOC)
 			{
 				//last_exit = 2;
 				return (-1);
 			}
 		}
-		if (head->type == PIPE && head->next == NULL)
-			return (-1);
-		head = head->next;
+		htoken = htoken->next;
 	}
 	return (0);
 }

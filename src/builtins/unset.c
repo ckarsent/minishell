@@ -1,36 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ckarsent <ckarsent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 17:52:34 by qboutel           #+#    #+#             */
-/*   Updated: 2025/04/12 10:18:36 by ckarsent         ###   ########.fr       */
+/*   Created: 2025/04/13 16:28:38 by ckarsent          #+#    #+#             */
+/*   Updated: 2025/04/13 16:42:28 by ckarsent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	builtin_echo(char **args)
+void	builtin_unset(t_env **env, char *key)
 {
-	int	i;
-	int	flag;
+	t_env	*tmp;
+	t_env	*prec;
 
-	flag = 1;
-	i = 1;
-	if (args[1] && !ft_strncmp(args[1], "-n", 2))
+	tmp = *env;
+	prec = NULL;
+	while (tmp)
 	{
-		flag = 0;
-		i++;
+		if (ft_strncmp(tmp->key, key, ft_strlen(key)) == 0)
+		{
+			if (prec)
+				prec->next = tmp->next;
+			else
+				*env = tmp->next;
+			free(tmp->key);
+			if (tmp->value)
+				free(tmp->value);
+			free(tmp);
+			return ;
+		}
+		prec = tmp;
+		tmp = tmp->next;
 	}
-	while (args[i])
-	{
-		printf("%s", args[i]);
-		if (args[i + 1])
-			printf(" ");
-		i++;
-	}
-	if (flag)
-		printf("\n");
 }

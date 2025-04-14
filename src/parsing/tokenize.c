@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ckarsent <ckarsent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 12:29:01 by qboutel           #+#    #+#             */
-/*   Updated: 2025/03/27 12:33:41 by ckarsent         ###   ########.fr       */
+/*   Updated: 2025/04/07 12:00:46 by qboutel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "minishell.h"
 
 char	*extract_operator(char *line, int *i)
 {
@@ -60,47 +60,79 @@ char	*extract_word(char *line, int *i)
 	return (ft_substr(line, start, (*i) - start));
 }
 
-char	*handle_token(char *line, t_token **head, bool *flag, int last_exit)
+char	*handle_token(char *line, t_token **head, bool *fheredoc, int last_exit)
 {
+	bool	fquote;
 	char	*process;
+	char	*tmp;
 	int		i;
 
 	i = 0;
 	if (line[i] == '|' || line[i] == '<' || line[i] == '>')
 	{
-		process = delete_quote(extract_operator(line, &i));
-		append_node(head, process, -1);
+		process = extract_operator(line, &i);
+		fquote = flag_quote(process);
 		if (ft_strncmp(process, "<<", 2) == 0)
-			*flag = true;
+			*fheredoc = true;
+		append_node_token(head, delete_quote(process), -1, fquote);
 	}
 	else
 	{
 		process = extract_word(line, &i);
-		if (!(*flag))
+		if (!(*fheredoc))
 			process = expansion(process, last_exit);
-		append_node(head, delete_quote(process), -1);
-		*flag = false;
+		fquote = flag_quote(process);
+		append_node_token(head, delete_quote(process), -1, fquote);
+		*fheredoc = false;
 	}
 	return (line + i);
 }
 
-int	tokenize(char *line, t_token **head)
+int	tokenize(char *line, t_token **htoken, int last_exit)
 {
-	bool	flag;
-	int		last_exit;
+	bool	fheredoc;
 
-	flag = false;
-	last_exit = 2; //faudra appeler la fonction qui parcours la structure pour trouver le last exit
+	fheredoc = false;
 	while (*line)
 	{
 		while (*line && ft_isspace(*line))
 			line++;
 		if (!(*line))
 			break ;
-		line = handle_token(line, head, &flag, last_exit);
+		line = handle_token(line, htoken, &fheredoc, last_exit);
 	}
+	//printf("OK\n");
 	return (0);
 }
+
+
+/*
+char	*handle_token(char *line, t_token **head, bool *fheredoc, int last_exit)
+{
+	bool	fquote;
+	char	*process;
+	int		i;
+
+	i = 0;
+	fquote = 1;
+	if (line[i] == '|' || line[i] == '<' || line[i] == '>')
+	{
+		process = delete_quote(extract_operator(line, &i));
+		append_node_token(head, process, -1);
+		if (ft_strncmp(process, "<<", 2) == 0)
+			*fheredoc = true;
+	}
+	else
+	{
+		process = extract_word(line, &i);
+		//printf("process : %s\n", process);
+		if (!(*fheredoc))
+			process = expansion(process, last_exit);
+		append_node_token(head, delete_quote(process), -1);
+		*fheredoc = false;
+	}
+	return (line + i);
+}*/
 
 // int	tokenize(char *line, t_token **head)
 // {
