@@ -16,7 +16,8 @@ void	print_list_token(t_token *htoken)
 {
 	while (htoken)
 	{
-		printf("[%s](%d)/%d/ -> ", htoken->token, htoken->type, htoken->fquote);
+		printf("[%s](%d)/%d/ -> ", htoken->token, htoken->type,
+			htoken->fquote);
 		htoken = htoken->next;
 	}
 	printf("NULL\n");
@@ -35,7 +36,8 @@ void	print_list_cmd(t_cmd *hcmd)
 		printf("--- NOEUD [%d] ---\n", n++);
 		while (hcmd->tokens[i] && i < hcmd->size)
 		{
-			printf("[%s] (%d) /%d/\n", hcmd->tokens[i], hcmd->types[i], hcmd->fquotes[i]);
+			printf("[%s] (%d) /%d/\n", hcmd->tokens[i], hcmd->types[i],
+				hcmd->fquotes[i]);
 			i++;
 		}
 		printf("\n");
@@ -44,9 +46,11 @@ void	print_list_cmd(t_cmd *hcmd)
 	printf("NULL\n");
 }
 
-void print_list_env(t_env *env_list)
+void	print_list_env(t_env *env_list)
 {
-	t_env *tmp = env_list;
+	t_env	*tmp;
+
+	tmp = env_list;
 	while (tmp)
 	{
 		printf("%s=%s\n\n", tmp->key, tmp->value);

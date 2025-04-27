@@ -6,7 +6,7 @@
 /*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:48:46 by qboutel           #+#    #+#             */
-/*   Updated: 2025/04/11 13:56:02 by qboutel          ###   ########.fr       */
+/*   Updated: 2025/04/17 11:08:08 by qboutel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,10 @@ t_cmd	*allocate_node_cmd(int count)
 	if (!node->fquotes)
 		return (free(node->tokens), free(node->types), NULL);
 	node->size = count;
-	// node->fd_heredoc = -1;
 	node->infile = NULL;
 	node->outfile = NULL;
 	node->is_append = false;
 	node->is_heredoc = false;
-	// node->redir_in = -1;
 	node->next = NULL;
 	return (node);
 }
@@ -87,12 +85,14 @@ void	append_node_cmd(t_cmd **hcmd, t_cmd *node)
 	}
 }
 
-int	init_cmd(t_token *htoken, t_cmd **hcmd)
+int	init_cmd(t_data *d)
 {
 	t_cmd	*node;
 	int		count;
+	t_token	*htoken;
 
-	node = NULL;
+	htoken = d->tlst;
+	d->clst = NULL;
 	while (htoken)
 	{
 		count = count_after_pipe(htoken);
@@ -101,7 +101,7 @@ int	init_cmd(t_token *htoken, t_cmd **hcmd)
 			return (-1);
 		if (set_node_cmd(node, htoken, count) == -1)
 			return (-1);
-		append_node_cmd(hcmd, node);
+		append_node_cmd(&d->clst, node);
 		while (htoken && htoken->type != PIPE)
 			htoken = htoken->next;
 		if (htoken && htoken->type == PIPE)

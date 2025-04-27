@@ -6,7 +6,7 @@
 /*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 19:39:54 by ckarsent          #+#    #+#             */
-/*   Updated: 2025/04/07 17:26:04 by qboutel          ###   ########.fr       */
+/*   Updated: 2025/04/20 19:30:46 by qboutel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,17 @@ int	error_syntaxe(t_token *htoken)
 		return (-1);
 	while (htoken)
 	{
-		if (htoken->type >= PIPE && htoken->type <= HEREDOC && htoken->next == NULL)
+		if (htoken->type >= PIPE && htoken->type <= HEREDOC
+			&& htoken->next == NULL)
 			return (-1);
-		if (htoken->type == PIPE && htoken->next->type == PIPE && htoken->next != NULL)
+		if (htoken->type == PIPE && htoken->next->type == PIPE
+			&& htoken->next != NULL)
 			return (-1);
-		if (htoken->type >= REDIR_OUT && htoken->type <= HEREDOC && htoken->next != NULL)
+		if (htoken->type >= REDIR_OUT && htoken->type <= HEREDOC
+			&& htoken->next != NULL)
 		{
 			if (htoken->next->type >= PIPE && htoken->next->type <= HEREDOC)
-			{
-				//last_exit = 2;
 				return (-1);
-			}
 		}
 		htoken = htoken->next;
 	}

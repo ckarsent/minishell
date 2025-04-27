@@ -6,7 +6,7 @@
 /*   By: ckarsent <ckarsent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 20:57:48 by ckarsent          #+#    #+#             */
-/*   Updated: 2025/04/13 16:03:21 by ckarsent         ###   ########.fr       */
+/*   Updated: 2025/04/27 13:26:58 by ckarsent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	check_quote(char *line)
 	return (-1);
 }
 
-/* retourne true si on est renter dans une des conditions */
 bool	handle_quotes(char c, bool *squote, bool *dquote)
 {
 	if (c == '\'' && !(*dquote))

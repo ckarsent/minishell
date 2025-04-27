@@ -3,58 +3,59 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ckarsent <ckarsent@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 05:45:42 by qboutel           #+#    #+#             */
-/*   Updated: 2025/04/14 10:35:04 by ckarsent         ###   ########.fr       */
+/*   Updated: 2025/04/27 00:38:47 by qboutel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	nbr_heredoc(t_token *htoken)
+char	**process(char *line, t_data *data)
 {
-	int count = 0;
+	char	**env;
 
-	while (htoken)
+	if (g_signal == SIGINT)
 	{
-		if (!ft_strncmp(htoken->token, "<<", 2) && ft_strlen(htoken->token) == 2 && htoken->fquote == 0)
-			count++;
-		htoken = htoken->next;
+		data->last_exit = 130;
+		g_signal = 0;
 	}
-	return (count);
+	add_history(line);
+	env = env_to_tab(data->elst);
+	if (parsing_line(line, data) == 0)
+	{
+		data->last_exit = execution(env, data);
+		if (supp_heredoc(nbr_heredoc(data->tlst)) == -1)
+			ft_putstr_fd("heredoc : malloc\n", 2);
+	}
+	free_split(env);
+	free_list_token(&data->tlst);
+	free_list_cmd(&data->clst);
+	return (env);
 }
 
-
-void	signal_handler(int sig)
+void	init_main(void)
 {
-	if (sig == SIGINT)
-		write(1, "\n./minishell$ ", 12);
+	print_logo();
+	print_minishell();
+	signaux(1);
 }
 
-int	main(int argc, char **argv, char **env)
+int	main(int argc, char **argv, char **envp)
 {
-	t_token	*htoken;
-	t_cmd	*hcmd;
-	t_env	*henv;
-	int		last_exit;
 	char	*line;
+	t_data	data;
 
+	data.tlst = NULL;
+	data.clst = NULL;
+	data.elst = NULL;
+	data.last_exit = 0;
 	(void)argv;
-	htoken = NULL;
-	hcmd = NULL;
-	henv = NULL;
-	last_exit = 258;
 	if (argc > 1)
-		return (ft_putstr_fd("minishell: No arguments expected\n", 2), 1);
-	//print_logo();
-	//print_minishell();
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, SIG_IGN);
-	init_env(env, &henv);
-	//print_list_env(henv);
-
-	printf("\n\n\n\n");
+		return (printf("minishell: No arguments expected\n"), 1);
+	init_main();
+	init_env(envp, &data.elst);
 	while (1)
 	{
 		line = readline("./minishell$ ");
@@ -64,17 +65,8 @@ int	main(int argc, char **argv, char **env)
 			break ;
 		}
 		if (*line)
-		{
-			add_history(line);
-			parsing_line(line, &htoken, &hcmd, last_exit);
-			last_exit = execution(&hcmd, last_exit, env, &henv);
-			if (supp_heredoc(nbr_heredoc(htoken)) == -1)
-				perror("eroor malloc");
-			free_list_token(&htoken);
-			free_list_cmd(&hcmd);
-		}
+			process(line, &data);
 		free(line);
 	}
-	free_list_env(&henv);
-	return (0);
+	return (free_list_env(&data.elst), 0);
 }

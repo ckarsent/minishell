@@ -1,54 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   signaux.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 17:52:34 by qboutel           #+#    #+#             */
-/*   Updated: 2025/04/27 00:03:30 by qboutel          ###   ########.fr       */
+/*   Created: 2025/04/16 15:23:02 by qboutel           #+#    #+#             */
+/*   Updated: 2025/04/27 00:39:05 by qboutel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	verif(char *s)
-{
-	int	i;
+int			g_signal = 0;
 
-	i = -1;
-	if (s[0] == '-')
-		i++;
-	else
-		return (0);
-	while (s[++i])
-		if (s[i] != 'n')
-			return (0);
-	return (1);
+void	signaux_parent(int sig)
+{
+	if (sig == SIGINT)
+	{
+		g_signal = SIGINT;
+		ft_putstr_fd("\n", 1);
+		if (waitpid(-1, NULL, WNOHANG) == 0)
+			return ;
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
 }
 
-int	builtin_echo(char **args)
+void	signaux(int is_parent)
 {
-	int	i;
-	int	flag;
-
-	flag = 1;
-	i = 1;
-	if (!args[1])
-		return (EXIT_FAILURE);
-	while (args[i] && verif(args[i]))
+	if (is_parent)
 	{
-		flag = 0;
-		i++;
+		signal(SIGINT, signaux_parent);
+		signal(SIGQUIT, SIG_IGN);
 	}
-	while (args[i])
+	else
 	{
-		printf("%s", args[i]);
-		if (args[i + 1])
-			printf(" ");
-		i++;
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 	}
-	if (flag)
-		printf("\n");
-	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 19:32:21 by qboutel           #+#    #+#             */
-/*   Updated: 2025/03/05 05:38:03 by qboutel          ###   ########.fr       */
+/*   Updated: 2025/04/17 16:08:16 by qboutel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 long	ft_atol(const char *str);
-char	**ft_split(char const *s, char c);
+char	**ft_split(char *s, char c);
 char	*ft_strchr(const char *str, int c);
 char	*ft_strrchr(const char *str, int c);
 char	*ft_strnstr(const char *str, const char *find, size_t n);
@@ -50,6 +50,7 @@ int		ft_isalpha(int c);
 int		ft_isdigit(int c);
 int		ft_isalnum(int c);
 int		ft_isascii(int c);
+int		ft_strcmp(char *str1, char *str2);
 int		ft_isprint(int c);
 int		ft_toupper(int c);
 int		ft_tolower(int c);

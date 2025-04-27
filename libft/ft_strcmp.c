@@ -1,38 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qboutel <qboutel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 21:39:10 by qboutel           #+#    #+#             */
-/*   Updated: 2025/04/17 16:30:50 by qboutel          ###   ########.fr       */
+/*   Created: 2025/04/17 16:06:33 by qboutel           #+#    #+#             */
+/*   Updated: 2025/04/17 16:07:00 by qboutel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	builtin_pwd(t_env *env)
+int	ft_strcmp(char *str1, char *str2)
 {
-	char	*cwd;
+	int	i;
 
-	cwd = getcwd(NULL, 0);
-	if (cwd != NULL)
+	i = 0;
+	while (str1[i] || str2[i])
 	{
-		printf("%s\n", cwd);
-		while (env)
-		{
-			if (ft_strcmp(env->key, "PWD") == 0)
-			{
-				free(env->value);
-				env->value = ft_strdup(cwd);
-				break ;
-			}
-			env = env->next;
-		}
-		free(cwd);
-		return (EXIT_SUCCESS);
+		if (str1[i] != str2[i])
+			return (str1[i] - str2[i]);
+		i++;
 	}
-	perror("getcwd");
-	return (EXIT_FAILURE);
+	return (0);
 }
